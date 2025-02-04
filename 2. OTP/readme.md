@@ -12,6 +12,3 @@ Utilisation: `./ft_otp [-g <key> | -k]`<br>
 
 Verification avec aothtool: oathtool --totp `key`.
 > Attention: pour oathtool, `key` ne doit pas etre cryptee
-
-# Code?
-

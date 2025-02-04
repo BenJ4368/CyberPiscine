@@ -11,14 +11,15 @@ Installation des requirements: `pip install requests beautifulsoup4 pillow piexi
 ## Spider
 >> Extraire les images d'un site web recursivement
 
-Spider.py : `python3 spider.py (-r (-l [n])) (-p [path]) [URL]`<br>
+Spider.py: `python3 spider.py (-r (-l [n])) (-p [path]) [URL]`<br>
 `-r`: Telecharge recursivement.<br>
 `-l [n]`: Details le niveau de la recursivite a la profondeur `n`.<br>
 `-p [path]`: Fichier de sauvegarde les images. (./data/ par default)<br>
-`[ulr]`: URL cible.
-
-### Code?
+`[ulr]`: j'ai besoin de l'expliquer?.
 
 
 ## Scorpion
-### Code?
+>> Extraire les metadata d'images.
+
+Scorpion.py: `python3 scorpion.py [file path] (+file path...)`
+`[file path]`: abuse, c'est dans le nom.

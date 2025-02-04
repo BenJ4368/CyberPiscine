@@ -74,16 +74,23 @@ std::string generateHOTP(const std::vector<unsigned char> &key, uint64_t counter
     // Generate HMAC-SHA1
     unsigned char hmacResult[EVP_MAX_MD_SIZE];
     unsigned int resultLen;
-    HMAC(EVP_sha1(), key.data(), key.size(), counterBytes, 8, hmacResult, &resultLen);
+    HMAC(EVP_sha1(), key.data(), key.size(), counterBytes, 8, hmacResult, &resultLen); // genrates HMAC-SHA1 hash
 
     // Truncate (Dynamic Truncation)
     int offset = hmacResult[resultLen - 1] & 0x0F;
+    // Last 4 bits of the last byte, exemple:
+    // lastbyte = 1010 1101
+    // 0x0F     = 0000 1111   apply binary mask
+    // & result = 0000 1101   only 4 last bits are kept
+    // offset = 0000 1101 = 13. This is the index where the 4 bytes will be extracted from the hash.
+    // guaranties that the offset is between 0 and 15, and random-ish.
+
     uint32_t truncatedHash = 0;
-    for (int i = 0; i < 4; ++i) {
+    for (int i = 0; i < 4; ++i) { // Getting 4 bytes from the hash, starting at the offset.
         truncatedHash <<= 8;
         truncatedHash |= hmacResult[offset + i];
     }
-    truncatedHash &= 0x7FFFFFFF;  // Ignore the sign bit
+    truncatedHash &= 0x7FFFFFFF;  // Ignore the sign bit (using binary mask again)
     truncatedHash %= 1000000;    // Limit to 6 digits
 
     // Format the OTP as a 6-digit string (fill with zeros if needed)
@@ -95,7 +102,7 @@ std::string generateHOTP(const std::vector<unsigned char> &key, uint64_t counter
 void generateAndPrintOTP() {
     auto key = loadKey();
 
-    uint64_t counter = std::time(nullptr) / 30;
+    uint64_t counter = std::time(nullptr) / 30; // Epoch time, 30 seconds interval.
 
     std::string otp = generateHOTP(key, counter);
     std::cout << "Your OTP is: " << otp << std::endl;

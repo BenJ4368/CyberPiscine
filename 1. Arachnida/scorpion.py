@@ -3,12 +3,14 @@ import argparse
 from PIL import Image
 import piexif
 
-# Extensions d'images autorisées
+# Target image extensions
 ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".bmp"}
 
+# Check if the file is a valid image
 def is_valid_image(file_path):
     return os.path.splitext(file_path)[1].lower() in ALLOWED_EXTENSIONS
 
+# Parse EXIF and other metadata
 def parse_exif_and_metadata(file_path):
     try:
         with Image.open(file_path) as img:
@@ -19,7 +21,7 @@ def parse_exif_and_metadata(file_path):
             print(f"    Mode : {img.mode}")
             print(f"    Size : {img.size} (width x height)")
             
-            # Extraction des métadonnées EXIF
+            # EXIF data extraction
             exif_data = img.getexif()
             print("\n[EXIF Data]:")
             if exif_data:
@@ -29,7 +31,7 @@ def parse_exif_and_metadata(file_path):
             else:
                 print(f"    No EXIF data found.")
 
-            # Extraction d'autres métadonnées disponibles
+            # Other metadata extraction
             if img.info:
                 print("\n[Other]:")
                 for key, value in img.info.items():
@@ -38,6 +40,7 @@ def parse_exif_and_metadata(file_path):
     except Exception as e:
         print(f"Error while analysing {file_path} : {e}")
 
+# Main function
 def main():
     parser = argparse.ArgumentParser(description="Scoprion")
     parser.add_argument("files", type=str, nargs="+", help="Files to parse")
