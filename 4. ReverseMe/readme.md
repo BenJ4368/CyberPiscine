@@ -1,16 +1,17 @@
 # CyberPiscine #4: Reverse Engineering
 
-We're in deeeeeep shit.
+Accroche toi
 
 ## Reverse me i'm famous !
 >> Desassembler des binaires pour comprendre leurs fonctionnement.
 
 ### level1
-On va utilise GDB, le debugger de gcc.
+Premiere chose, on fait un `strings binary/level1` pour sortir toute les chaines de characteres ascii >=5 du binaire.
+Ca ne nous aide pas enorme, mais on vois que le binaire utilise `printf` et `strcmp`, et on peux y lire `Please enter key:` `Good job.` et `Nope.`.<br><br>
+Ensuite on peux faire un `objdump -d -Mintel binar/level1` (`-d` pour desassembler, `-Mintel` pour la syntax intel, plus simple a lire). Ici, on vois le desassemblage des fonctions presentes dans le binaire. On peux lire que le main appel `strcmp` grace a l'instruction `[..] call   1040 <strcmp@plt>`. Je ne sais pas si on peux faire plus avec `objdump`, donc on va utiliser GDB, le debugger de gcc.<br><br>
 On lance GDB avec le binaire: `gdb binary/level1`
 On liste les fonctions utilisees par le binaire: `info functions`
-On desassemble la fonction main pour avoir un appercu global: `disassemble main`
-Pour rendre ca plus 'lisible'(ptdr), on change la syntax assembly: `set disassembly-flavor intel` (puis re `disassemble main` pour voir la difference).
+On change la syntax assembly avec `set disassembly-flavor intel` pour plus de lisibilite (ptdr) et on desassemble lemain pour avoir un appercu global: `disassemble main`
 
 ```
    Dump of assembler code for function main:
@@ -79,3 +80,8 @@ On lance l'execution du binaire avec `run` (puis des `next` si besoin), jusqu'a 
 Plus qu'a refaire un simple programme qui fait la meme chose et on est bon pour le level1.
 
 ### level2
+
+On test `strings level2`; On vois plein de trucs. Du lorem ipsum pour noyer les infos, `memset`, `atoi` et autres. On essaie aussi `objdump`, comme pour le level1 mais GDB seras plus efficace ici.<br><br>
+
+On desassemble le main dans GDB, et on s'appercois qu'on a des appels a des fonctions dont `no`, `flush`, on retrouve `memset` et `atoi`, mais aussi `strlen` et `strcmp`. Tout en bas, on vois un appel a `ok`, apres `strcmp`. Je suppose que c'est cette fonction qu'on cherche a executer.<br><br>
+
