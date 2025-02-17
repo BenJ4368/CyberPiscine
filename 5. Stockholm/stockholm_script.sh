@@ -7,7 +7,7 @@ fake_extensions=(".xyz" ".abc" ".zzz" ".foo" ".bar")
 
 create_file() {
     local file_path=$1
-    echo "Ceci est un fichier avec l'extension $2." > "$file_path"
+    echo "Ceci est un fichier simplissime avec l'extension $2." > "$file_path"
 }
 
 for ext in "${extensions[@]}"; do

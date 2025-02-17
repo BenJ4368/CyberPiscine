@@ -6,7 +6,6 @@ RUN apt-get update && apt-get install -y \
 
 COPY stockholm.cpp .
 COPY stockholm_script.sh .
-COPY wannacry_extensions.txt .
 
 
 RUN g++ -o stockholm stockholm.cpp -lssl -lcrypto -std=c++17 && \

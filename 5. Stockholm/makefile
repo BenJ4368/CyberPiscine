@@ -1,6 +1,5 @@
 all:
-	@echo "Compiling stockholm..."
-	@echo "Building docker..."
+	@echo "Building stockholm docker..."
 	@docker build -t stockholm .
 	@docker run -it stockholm /bin/bash
 
