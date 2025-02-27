@@ -1,0 +1,5 @@
+PUBLICHOST=localhost
+FTP_USER_NAME=fptuser
+FTP_USER_PASS=ftppass
+FTP_USER_HOME=/home/user
+

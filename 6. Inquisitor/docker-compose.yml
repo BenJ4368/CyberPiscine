@@ -1,0 +1,31 @@
+services:
+  ftp-server:
+    image: stilliard/pure-ftpd
+    container_name: ftp-server
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    volumes:
+      - ftp-data:/home/user
+
+  ftp-client:
+    image: alpine
+    container_name: ftp-client
+    depends_on:
+      - ftp-server
+    volumes:
+      - ./client:/client
+    command: >
+      sh -c "apk add --no-cache ftp && 
+      echo 'Hello FTP!' > /client/test.txt && 
+      ftp -inv ftp-server <<EOF
+      user user password
+      put /client/test.txt
+      bye
+      EOF"
+
+volumes:
+    ftp-data:
