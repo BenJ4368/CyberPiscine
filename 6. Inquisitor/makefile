@@ -1,26 +1,44 @@
+
 all:
-	@echo "Building inquisitor docker..."
-	@docker build -t inquisitor .
-	@docker run -it inquisitor /bin/bash
+	@echo "Building inquisitor containers..."
+	sudo docker-compose up --build
 
 term:
-	@docker run -it inquisitor /bin/bash
+	@sudo docker exec -it inquisitor /bin/bash
 
 clean:
-	@docker stop $$(docker ps -qa);\
-	 docker rm $$(docker ps -qa);\
-	 docker rmi $$(docker images -qa);\
-	 docker volume rm $$(docker volume ls -q);\
-	 docker network rm $$(docker network ls -q)
+	@sudo docker stop $$(sudo docker ps -qa);\
+	 sudo docker rm $$(sudo docker ps -qa);\
+	 sudo docker rmi $$(sudo docker images -qa);\
+	 sudo docker volume rm $$(sudo docker volume ls -q);\
+	 sudo docker network rm $$(sudo docker network ls -q)
+
+fclean:
+	@sudo rm -rf client/uploads/*
+	@sudo rm -rf server/*
+	@make clean
+
+info:
+	@echo "=== ftp-client ==="
+	@echo "IP : $(shell sudo docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ftp-client)"
+	@echo "MAC : $(shell sudo docker inspect --format '{{range .NetworkSettings.Networks}}{{.MacAddress}}{{end}}' ftp-client)"
+	@echo ""
+	@echo "=== ftp-server ==="
+	@echo "IP : $(shell sudo docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ftp-server)"
+	@echo "MAC : $(shell sudo docker inspect --format '{{range .NetworkSettings.Networks}}{{.MacAddress}}{{end}}' ftp-server)"
+	@echo ""
+	@echo "=== inquisitor ==="
+	@echo "IP : $(shell sudo docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' inquisitor)"
+	@echo "MAC : $(shell sudo docker inspect --format '{{range .NetworkSettings.Networks}}{{.MacAddress}}{{end}}' inquisitor)"
 
 list:
 	@echo "======== CONTAINERS"
-	@docker ps -a
+	@sudo docker ps -a
 	@echo "======== IMAGES"
-	@docker images -a
+	@sudo docker images -a
 	@echo "======== VOLUMES"
-	@docker volume ls
+	@sudo docker volume ls
 	@echo "======== NETWORKS"
-	@docker network ls
+	@sudo docker network ls
 
 .PHONY: all down clean list

