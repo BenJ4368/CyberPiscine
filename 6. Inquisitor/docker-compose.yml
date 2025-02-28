@@ -37,7 +37,7 @@ services:
       - ftp-client
       - ftp-server
     volumes:
-      - ./inquisitor:/inquisitor
+      - ./inquisitor:/intercepted
 
 networks:
   inquisitor-network:

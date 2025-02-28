@@ -11,5 +11,5 @@ while true; do
     lftp -u "$FTP_USER_NAME","$FTP_USER_PASS" ftp-server -e "put $FILE; bye"
 
     echo "Fichier $FILE envoyé."
-    sleep 60
+    sleep 10
 done
