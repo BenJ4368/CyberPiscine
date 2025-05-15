@@ -62,6 +62,55 @@ std::vector<unsigned char> loadKey() {
     return key;
 }
 
+std::vector<unsigned char> prepareKey(const std::vector<unsigned char>& key) {
+    const size_t blockSize = 64; // SHA1 block size
+
+    std::vector<unsigned char> K(blockSize, 0x00); // init 64 bytes to 0
+    if (key.size() > blockSize) {
+        // Hash the key if it's too long
+        unsigned char hashed[EVP_MAX_MD_SIZE];
+        unsigned int hashLen;
+        EVP_Digest(key.data(), key.size(), hashed, &hashLen, EVP_sha1(), nullptr);
+        std::copy(hashed, hashed + hashLen, K.begin());
+    } else {
+        std::copy(key.begin(), key.end(), K.begin());
+    }
+    return K;
+}
+
+std::vector<unsigned char> computeHMAC_SHA1(const std::vector<unsigned char>& key, const unsigned char* message, size_t messageLen) {
+    const size_t blockSize = 64;
+    auto K = prepareKey(key);
+
+    // ipad et opad
+    std::vector<unsigned char> o_key_pad(blockSize);
+    std::vector<unsigned char> i_key_pad(blockSize);
+
+    for (size_t i = 0; i < blockSize; ++i) {
+        o_key_pad[i] = K[i] ^ 0x5c;
+        i_key_pad[i] = K[i] ^ 0x36;
+    }
+
+    // 1. H(i_key_pad || message)
+    std::vector<unsigned char> inner(i_key_pad.begin(), i_key_pad.end());
+    inner.insert(inner.end(), message, message + messageLen);
+
+    unsigned char innerHash[EVP_MAX_MD_SIZE];
+    unsigned int innerHashLen;
+    EVP_Digest(inner.data(), inner.size(), innerHash, &innerHashLen, EVP_sha1(), nullptr);
+
+    // 2. H(o_key_pad || innerHash)
+    std::vector<unsigned char> outer(o_key_pad.begin(), o_key_pad.end());
+    outer.insert(outer.end(), innerHash, innerHash + innerHashLen);
+
+    unsigned char finalHash[EVP_MAX_MD_SIZE];
+    unsigned int finalHashLen;
+    EVP_Digest(outer.data(), outer.size(), finalHash, &finalHashLen, EVP_sha1(), nullptr);
+
+    return std::vector<unsigned char>(finalHash, finalHash + finalHashLen); // 20 bytes
+}
+
+
 std::string generateHOTP(const std::vector<unsigned char> &key, uint64_t counter) {
     // Convert counter to bytes (big-endian)
     // Extracting bytes from the end of the 64-bit integer makes it easier to handle.
@@ -72,9 +121,9 @@ std::string generateHOTP(const std::vector<unsigned char> &key, uint64_t counter
     }
 
     // Generate HMAC-SHA1
-    unsigned char hmacResult[EVP_MAX_MD_SIZE];
-    unsigned int resultLen;
-    HMAC(EVP_sha1(), key.data(), key.size(), counterBytes, 8, hmacResult, &resultLen); // genrates HMAC-SHA1 hash
+    std::vector<unsigned char> hmacVec = computeHMAC_SHA1(key, counterBytes, 8);
+    unsigned char* hmacResult = hmacVec.data();
+    unsigned int resultLen = hmacVec.size();
 
     // Truncate (Dynamic Truncation)
     int offset = hmacResult[resultLen - 1] & 0x0F;
