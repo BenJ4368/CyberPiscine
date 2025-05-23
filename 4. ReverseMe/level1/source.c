@@ -2,7 +2,7 @@
 #include <string.h>
 
 int main() {
-    char input[50];
+    char input[100];
 
     printf("Please enter key: ");
     

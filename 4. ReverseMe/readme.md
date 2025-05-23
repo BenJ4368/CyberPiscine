@@ -146,7 +146,7 @@ On desassemble le main dans GDB, et on s'appercois qu'on a des appels a des fonc
    0x000013b7 <+231>:	call   0x10a0 <strlen@plt>             C// strlen()
    0x000013bc <+236>:	mov    ecx,eax                         C// save eax into ecx
    0x000013be <+238>:	xor    eax,eax                         C// eax XOR eax (puts eax to 0)
-   0x000013c0 <+240>:	cmp    ecx,0x8                         C// cmp (eax = 8 ?)
+   0x000013c0 <+240>:	cmp    ecx,0x8                         C// cmp (ecx = 8 ?)
    0x000013c3 <+243>:	mov    BYTE PTR [ebp-0x41],al
    0x000013c6 <+246>:	jae    0x13ee <main+286>               C// jump to main+286 if cmp >=
    0x000013cc <+252>:	mov    ebx,DWORD PTR [ebp-0x40]
@@ -251,3 +251,37 @@ Ca nous fait:  `00101108097098101114101`
    - (char)atoi(`101`) = `e`
    - (char)atoi(`114`) = `r`
    - (char)atoi(`101`) = `e`
+
+### level3a
+
+Pour ce level3, on arrive sur des trucs plus complexe.
+On va utiliser mieux que gdb, un outils de visualisation qui s'appelle `cutter`.
+
+on lance le binaire avec cutter, et on double clique sur main directement.
+D'ici, on peux voir l'onglet `Strings`, qui fait exactement ce que la commande `strings` fait.
+
+l'onglet `Disassembly` fait ce que gdb faisait si bien, mais le plus important, c'est l'onglet `Decompiler`.
+
+En gros, cutter recreer le code qui une fois compile, donne le binaire.
+c'est assez imbuvable, mais on peux s'y retrouver si on renomme les variables de facons humaine.
+
+on apercois une chaine `******` dans l'onglet `Strings`, comme 'delabere', elle est suspecte.
+ensuite, on vois dans le `Decompiler`, qu'il y a plein d'appel a '__syscall_malloc()'.
+
+Petite nuance, on vois dans la liste des fonctions qu'il existe `__syscall_malloc()`, qui est une fonction `no()` deguisee.
+Mais il existe aussi `____syscall_malloc()` (avec des _ en plus), qui elle remplace `yes()`.
+
+Meme principe que l'exo2, pour proc `____syscall_malloc()` (= yes()), on doit trouver le mot de passe qui declenche strcmp().
+
+On vois que le string comparer dans strcmp() est `*******`, on vois aussi qu'ils utilisent atoi(), comme l'exo precedent.
+Et comme l'exo precedent, on vois qu'ils verifient si deux character sont bien place au debut du mot de passe, ici: `4` et `2`.
+
+Pour le coup rien de compliquer, on fait exactement le meme processus que pour l'exo precedent; `42` au debut parce que c'est demande, puis des 7 groupe de 3 pour atoi, qui se traduisent en `*` (042).
+on obtien donc `42 042 042 042 042 042 042 042` (sans les espace)
+
+
+
+
+
+
+
