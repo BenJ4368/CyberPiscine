@@ -1,25 +1,47 @@
-# CyberPiscine
-> Piscine de Cyber securite apres le tronc commun de 42
+# 🕷️ CyberPiscine
 
-## 1. Arachnida
-- **Spider**: Extraire les images d'un site web recursivement.
-- **Scorpion**: Extraire les metadata d'images.
+> Piscine de cybersécurité 🛡️ après le tronc commun de 42
+---
 
-## 2. OTP
-- **ft_otp**: Enregister et crypter une clef, et s'en servir pour generer des mots de passe a usage unique.
+## 📁 Projets
 
-## 3. Onion
-- **ft_onion**: Heberger une simple page html, accessible sur Tor. Et connexion au serveur en ssh.
+### 1. 🕸️ Arachnida
 
-## 4. ReverseMe
-- **Reverse me i'm famous!**: Desassembler des binaires pour comprendre leurs fonctionnement.
-    - level1
-    - level2
+- **Spider** 🕷️ : Extraction récursive des images d'un site web. (WebScrapper)
+- **Scorpion** 🦂 : Extraction des métadonnées d'images.
 
-## 5. Stockholm (Malware)
+### 2. 🔐 OTP
 
-## OPTIONAL Iron Dome
+- **ft_otp** : Enregistrement et chiffrement d'une clé, utilisée pour générer des mots de passe à usage unique (OTP).
 
-## 6. Inquisitor
+### 3. 🧅 Onion
 
-## 7. Vaccine
+- **ft_onion** : Hébergement d'une page HTML accessible via le réseau Tor, avec connexion SSH au serveur.
+
+### 4. 🧠 ReverseMe
+
+- Désassemblage de binaires pour en récupérer le mot de passe.
+
+### 5. 🧬 Stockholm (Malware)
+
+- Analyse, compréhension puis reproduction de malware.
+
+### 6. 🕵️ Inquisitor
+
+- [Description à compléter]
+
+### 7. 💉 Vaccine
+
+- [Description à compléter]
+
+### 🛡️ OPTIONAL: Iron Dome
+
+- [Description à compléter]
+
+---
+
+## 📄 Documentation
+
+- `en.subject.pdf` : Sujet officiel de la piscine (en anglais).
+
+---
