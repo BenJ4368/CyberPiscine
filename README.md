@@ -28,15 +28,15 @@
 
 ### 6. 🕵️ Inquisitor
 
-- [Description à compléter]
+- En cours
 
 ### 7. 💉 Vaccine
 
-- [Description à compléter]
+- A venir
 
 ### 🛡️ OPTIONAL: Iron Dome
 
-- [Description à compléter]
+- A venir
 
 ---
 
