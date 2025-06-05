@@ -1,17 +1,28 @@
-# CyberPiscine #4: Reverse Engineering
+# CyberPiscine #4: 🧩 Reverse Engineering
 
-Accroche toi
+> Projet de cybersécurité 42 : Desassembler des binaires pour comprendre leurs fonctionnement.
 
-## Reverse me i'm famous !
->> Desassembler des binaires pour comprendre leurs fonctionnement.
+## Level 1️⃣
 
-### level1
-Premiere chose, on fait un `strings binary/level1` pour sortir toute les chaines de characteres ascii >=5 du binaire.
-Ca ne nous aide pas enorme, mais on vois que le binaire utilise `printf` et `strcmp`, et on peux y lire `Please enter key:` `Good job.` et `Nope.`.<br><br>
-Ensuite on peux faire un `objdump -d -Mintel binar/level1` (`-d` pour desassembler, `-Mintel` pour la syntax intel, plus simple a lire). Ici, on vois le desassemblage des fonctions presentes dans le binaire. On peux lire que le main appel `strcmp` grace a l'instruction `[..] call   1040 <strcmp@plt>`. Je ne sais pas si on peux faire plus avec `objdump`, donc on va utiliser GDB, le debugger de gcc.<br><br>
-On lance GDB avec le binaire: `gdb binary/level1`
-On liste les fonctions utilisees par le binaire: `info functions`
-On change la syntax assembly avec `set disassembly-flavor intel` pour plus de lisibilite (ptdr) et on desassemble lemain pour avoir un appercu global: `disassemble main`
+Avant toute chose, lancons le binaire ! <br>
+`./binary/level1` <br>
+Un simple prompt, une entree utilisateur et tres probablement un comparaison de cette entree avec un mot de passe.
+- - -
+
+Essayons d'en apprendre plus : <br>
+Utilisons un outils 'simple': le debugger `GDB`. <br>
+Lancons-le en lui donnant le binaire; `gdb binary/level1`. <br>
+La commande `info functions` nous liste toutes les fonctions appelees par le binaire. On y vois entre autres: <br>
+
+- `printf()` le prompt.
+- `scanf()` l'entree utilisateur.
+- `strcmp()` la comparaison.
+
+Creusons plus loin: <br>
+Adaptons d'abord la syntax qu'utilise GDB, pour plus de lisibilite avec `set disassembly-flavor intel`. <br>
+Ensuite, desassemblons le main() avec `disassemble main`. <br>
+
+On obtiens le dump assembly suivant :
 
 ```
    Dump of assembler code for function main:
@@ -66,7 +77,7 @@ On change la syntax assembly avec `set disassembly-flavor intel` pour plus de li
    0x5655627b <+187>:	ret
 ```
 
-#### Essayons de faire simple avec un exemple:
+### Analysons un exemple pour mieux comprendre:
 `0x56556227 <+103>:	call   0x56556070 <__isoc99_scanf@plt>`
 - `0x56556227`: addresse memoire de l'instruction
 - `<+103>`: offset en octet depuis le debut de la fonction (ici, on est 103 octets apres le debut de main)
@@ -74,10 +85,15 @@ On change la syntax assembly avec `set disassembly-flavor intel` pour plus de li
 - `0x56556070`: adresse memoire de la fonction appelee
 - `<__isoc99_scanf@plt>`: nom de la fonction appelee. Ici, scanf().
 
-Si on regarde les `call`, on sait que main appel `strcmp`. Le binaire compare l'entree utilisateur de `scanf` avec une valeur, et c'est cette clef qu'on cherche.<br>Ducoup, on place un "breakpoint" sur `strcmp` avec la commande `b strcmp`. A l'execution du binaire, gdb s'arretera juste avant que le CPU n'entre dans `strcmp`, mais a cette etape les arguments de `strcmp` on deja ete places dans les registres.<br><br>
-On lance l'execution du binaire avec `run` (puis des `next` si besoin), jusqu'a s'arreter sur le breakpoint (On entre une valeur reconnaissable quand le binaire nous prompt d'entree la clef). Puis, on verifie les donnees dans les registres avec `info registers` pour les afficher. On obtient dans la premiere colonne le nom de chaque registre.Google me dit que generalement, `ecx` et `edx` stock les deux arguments de `strcmp`. On print les deux avec la commande `x` pour detailler, et `/s` pour specifier le format 'string', donc `x/s $ecx` et `x/s $edx`.<br><br>L'un des deux est la valeur qu'on a entree tout a l'heure, l'autre est la clef.<br> La clef ressemble a un bout de code (c'est peut etre juste moi mdr), mais pas besoin de chercher 1h30 pour en trouver la signification (vecu), y'en a pas. On peux tester en sortant de gdb avec `quit`, en lancant le binaire et en lui donnant la clef. Tada!
+On cherche a connaitre les valeurs comparees dans `strcmp()`, puisqu'il est tres probable que le binaire compare l'entree utilisateur au mot de passe que nous recherchons.<br>
+`GDB` nous permet de suivre et controler l'execution du binaire en placant des breakpoints. Ici, on veux placer un breakpoints dans `strcmp()`. On fait donc `b strcmp`.<br>
+Une fois nos/notre breakpoint place, on lance l'execution avec `run` (puis des `next`, si besoin).<br>
+Lorsque le binaire nous demande une entree utilisateur, on y rentre une valeur reconaissable pour simplifier la chose. Par exemple: "CHEESECAKE".<br>
+Une fois sur le breakpoints, on souhaite afficher les donnees stockees dans les registres avec `info register`.
+Google me dit que `strcmp()` utilise les registre `ecx` et `edx`, affichons donc les donnes de ces deux registres avec `x/s $ecx` et `x/s $edx`.<br>
+L'un est notre valeur reconaissable "CHEESECAKE", l'autre est le mot de passe.
+On peux sortir de GDB, pour lancer le binaire et tester le mot de passe.
 
-Plus qu'a refaire un simple programme qui fait la meme chose et on est bon pour le level1.
 
 ### level2
 
@@ -252,7 +268,7 @@ Ca nous fait:  `00101108097098101114101`
    - (char)atoi(`114`) = `r`
    - (char)atoi(`101`) = `e`
 
-### level3a
+### level3
 
 Pour ce level3, on arrive sur des trucs plus complexe.
 On va utiliser mieux que gdb, un outils de visualisation qui s'appelle `cutter`.
