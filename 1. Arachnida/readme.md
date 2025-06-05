@@ -1,10 +1,17 @@
-# CyberPiscine #1: Arachnida
+# CyberPiscine #1: 🕷️ Arachnida
+
+**Arachnida** est un outil développé dans le cadre de la piscine de cybersécurité de 42.  
+Il se compose de deux modules principaux :
+
+- **Spider** 🕸️ : Un scraper web qui explore récursivement un site pour en extraire toutes les images.
+- **Scorpion** 🦂 : Un analyseur de métadonnées qui inspecte les images téléchargées.
+---
 
 
-## Spider
+## 🕸️ Spider
 > "The Spider program will allow you to extract all the images from a website, recursively, by providing a url as a parameter."
 
-Spider scan le document html trouve via l'URL fournie, et recherche dans ce document toute mention d'image ou de lien menant vers une autre page.
+Spider scan le document html trouve via l'URL fournie, et recherche dans ce document toute mention d'image ou de lien menant vers une autre page. Spider ne s'interesse qu'au format suivant: `.jpg, .jpeg, .png, .gif, .bmp`
 Spider telecharge alors chaque image sur une page, puis va en visiter une autre, de facons recursive.
 
 *(Creer un venv d'abord, voir section suivante)* <br>
@@ -26,10 +33,10 @@ Installation des requirements: `pip install requests beautifulsoup4 pillow piexi
 Une fois dans le venv, on peux lancer Spider.
 
 
-## Scorpion
+## 🦂 Scorpion
 > The Scorpion program receives image files as parameters and must be able to parse them for EXIF and other metadatas, displaying them on the screen.
 
-Scorpion analyse les images donnees, extirpe les metadonnees, et les affiche dans une interface graphique simpliste.
+Scorpion analyse les images selectionees, en extirpe les metadonnees, et les affiche dans une interface graphique simpliste.
 
 Pour lancer Scorpion: `python3 scorpion.py [file path] (+file path...)`
 `[file path]`: Path vers l'image a analyser
