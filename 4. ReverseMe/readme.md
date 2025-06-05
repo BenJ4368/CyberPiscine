@@ -86,12 +86,13 @@ On obtiens le dump assembly suivant :
 - `<__isoc99_scanf@plt>`: nom de la fonction appelee. Ici, scanf().
 
 On cherche a connaitre les valeurs comparees dans `strcmp()`, puisqu'il est tres probable que le binaire compare l'entree utilisateur au mot de passe que nous recherchons.<br>
-`GDB` nous permet de suivre et controler l'execution du binaire en placant des breakpoints. Ici, on veux placer un breakpoints dans `strcmp()`. On fait donc `b strcmp`.<br>
+`GDB` nous permet de suivre et controler l'execution du binaire en placant des breakpoints.<br>
+Ici, on veux placer un breakpoints dans `strcmp()`. On fait donc `b strcmp`.<br>
 Une fois nos/notre breakpoint place, on lance l'execution avec `run` (puis des `next`, si besoin).<br>
-Lorsque le binaire nous demande une entree utilisateur, on y rentre une valeur reconaissable pour simplifier la chose. Par exemple: "CHEESECAKE".<br>
+Lorsque le binaire nous demande une entree, on y rentre une valeur reconaissable. Par exemple: "CHEESECAKE".<br>
 Une fois sur le breakpoints, on souhaite afficher les donnees stockees dans les registres avec `info register`.
-Google me dit que `strcmp()` utilise les registre `ecx` et `edx`, affichons donc les donnes de ces deux registres avec `x/s $ecx` et `x/s $edx`.<br>
-L'un est notre valeur reconaissable "CHEESECAKE", l'autre est le mot de passe.
+Google me dit que `strcmp()` utilise les registre `ecx` et `edx`, affichons donc les donnees de ces deux registres avec `x/s $ecx` et `x/s $edx`.<br>
+L'un est notre valeur reconaissable "CHEESECAKE", l'autre est le mot de passe.<br>
 On peux sortir de GDB, pour lancer le binaire et tester le mot de passe.
 
 
