@@ -101,9 +101,9 @@ On peux sortir de GDB, pour lancer le binaire et tester le mot de passe.
 
 ### level2
 
-On test `strings level2`; On vois plein de trucs. Du lorem ipsum pour noyer les infos, `memset`, `atoi` et d'autres. On note aussi le mot `delabere`, tres etrange. On essaie aussi `objdump`, comme pour le level1 mais GDB seras plus efficace ici.<br><br>
+On test `strings level2` pour dump les strings presents en dur dans le binaire; On vois plein de trucs. Du lorem ipsum pour noyer les infos, `memset`, `atoi` et d'autres. On note aussi le mot `delabere`, tres etrange. <br>
 
-On desassemble le main dans GDB, et on s'appercois qu'on a des appels a des fonctions dont `no`, `flush`, on retrouve `memset` et `atoi`, mais aussi `strlen` et `strcmp`. Tout en bas, on vois un appel a `ok`, apres `strcmp`. Je suppose que c'est cette fonction qu'on cherche a executer.<br><br>
+On desassemble le main dans GDB, et on s'appercois qu'on a des appels a des fonctions dont `no`, `flush`, on retrouve `memset` et `atoi`, mais aussi `strlen` et `strcmp`. Tout en bas, on vois un appel a `ok`, apres `strcmp`. Je suppose que c'est cette fonction qu'on cherche a executer.<br>
 
 ```
    0x000012d0 <+0>:	   push   ebp
@@ -247,10 +247,10 @@ On va approfondir quelques trucs ici;
 
 Avec ca, on peux deja essayer de deviner la structure logique;
    - block A// On prompt une entree utilisateur avec printf()  et scanf(), et on compare la sortie de scanf() a 1 pour verifier si la fonction a bien recuperer une entree. Si non, on call no().
-   - block B// On verifie que les deux premiers caracters du buffer rempli par scanf() sont deux caracters "0". Si non, on call no(). Appelons le buffer de scanf() "password".
-   - block C// On verifie que `strlen()` >= 8. (strlen(password) probablement)
+   - block B// On verifie que les deux premiers caracters du buffer rempli par scanf() sont deux caracters "0". Si non, on call no(). Appelons le buffer de scanf() "user_entry".
+   - block C// On verifie que `strlen()` >= 8. (strlen(user_entry) probablement)
    - block D// On verifie si `strlen()` est pair ou impair (La je sais pas trop ?).
-   - block E// Ces instructions sont tres probablement celles d'une boucles while. C// et D// sont probablement des conditions de cette boucle. On vois un AtoI dans cette boucle, et tout les `mov` qui le precede font penser a la creation d'une chaine de 3 caracters. (merci gpt la)
+   - block E// Ces instructions sont tres probablement celles d'une boucles while. C// et D// sont probablement des conditions de cette boucle. On vois un `atoi()` dans cette boucle, et tout les `mov` qui le precede font penser a la creation d'une chaine de 3 caracters.
    - block F// Ici, enfin, on a le strcmp finale qui nous dirigeras vers `ok()` ou `no()` une derniere fois.
 
 
@@ -274,30 +274,30 @@ Ca nous fait:  `00101108097098101114101`
 
 ### level3
 
-Pour ce level3, on arrive sur des trucs plus complexe.
-On va utiliser mieux que gdb, un outils de visualisation qui s'appelle `cutter`.
+Pour ce level3, on arrive sur des trucs plus complexe. <br>
+On va utiliser mieux que gdb, un outils de visualisation qui s'appelle `cutter`. <br>
 
-on lance le binaire avec cutter, et on double clique sur main directement.
-D'ici, on peux voir l'onglet `Strings`, qui fait exactement ce que la commande `strings` fait.
+on lance le binaire avec cutter, et on double clique sur main directement. <br>
+D'ici, on peux voir l'onglet `Strings`, qui fait exactement ce que la commande `strings` fait. <br>
 
-l'onglet `Disassembly` fait ce que gdb faisait si bien, mais le plus important, c'est l'onglet `Decompiler`.
+l'onglet `Disassembly` fait ce que gdb faisait si bien, mais le plus important, c'est l'onglet `Decompiler`. <br>
 
-En gros, cutter recreer le code qui une fois compile, donne le binaire.
-c'est assez imbuvable, mais on peux s'y retrouver si on renomme les variables de facons humaine.
+En gros, cutter recreer le code qui une fois compile, donne le binaire. <br>
+c'est assez imbuvable, mais on peux s'y retrouver si on renomme les variables de facons humaine. <br>
 
-on apercois une chaine `******` dans l'onglet `Strings`, comme 'delabere', elle est suspecte.
-ensuite, on vois dans le `Decompiler`, qu'il y a plein d'appel a '__syscall_malloc()'.
+on apercois une chaine `******` dans l'onglet `Strings`, comme 'delabere', elle est suspecte. <br>
+ensuite, on vois dans le `Decompiler`, qu'il y a plein d'appel a '__syscall_malloc()'. <br>
 
-Petite nuance, on vois dans la liste des fonctions qu'il existe `__syscall_malloc()`, qui est une fonction `no()` deguisee.
-Mais il existe aussi `____syscall_malloc()` (avec des _ en plus), qui elle remplace `yes()`.
+Petite nuance, on vois dans la liste des fonctions qu'il existe `__syscall_malloc()`, qui est une fonction `no()` deguisee. <br>
+Mais il existe aussi `____syscall_malloc()` (avec des _ en plus), qui elle remplace `yes()`. <br>
 
-Meme principe que l'exo2, pour proc `____syscall_malloc()` (= yes()), on doit trouver le mot de passe qui declenche strcmp().
+Meme principe que l'exo2, pour proc `____syscall_malloc()` (= yes()), on doit trouver le mot de passe qui declenche strcmp(). <br>
 
-On vois que le string comparer dans strcmp() est `*******`, on vois aussi qu'ils utilisent atoi(), comme l'exo precedent.
-Et comme l'exo precedent, on vois qu'ils verifient si deux character sont bien place au debut du mot de passe, ici: `4` et `2`.
+On vois que le string comparer dans strcmp() est `*******`, on vois aussi qu'ils utilisent atoi(), comme l'exo precedent. <br>
+Et comme l'exo precedent, on vois qu'ils verifient si deux character sont bien place au debut du mot de passe, ici: `4` et `2`. <br>
 
-Pour le coup rien de compliquer, on fait exactement le meme processus que pour l'exo precedent; `42` au debut parce que c'est demande, puis des 7 groupe de 3 pour atoi, qui se traduisent en `*` (042).
-on obtien donc `42 042 042 042 042 042 042 042` (sans les espace)
+Pour le coup rien de compliquer, on fait exactement le meme processus que pour l'exo precedent; `42` au debut parce que c'est demande, puis des 7 groupe de 3 pour atoi, qui se traduisent en `*` (042). <br>
+on obtien donc `42 042 042 042 042 042 042 042` (sans les espaces).
 
 
 
