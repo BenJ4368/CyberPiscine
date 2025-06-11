@@ -1,44 +1,34 @@
 
 all:
 	@echo "Building inquisitor containers..."
-	sudo docker-compose up --build
+	docker-compose up --build
 
-term:
-	@sudo docker exec -it inquisitor /bin/bash
+attacker:
+	@docker exec -it attacker /bin/bash
+client:
+	@docker exec -it client /bin/bash
 
 clean:
-	@sudo docker stop $$(sudo docker ps -qa);\
-	 sudo docker rm $$(sudo docker ps -qa);\
-	 sudo docker rmi $$(sudo docker images -qa);\
-	 sudo docker volume rm $$(sudo docker volume ls -q);\
-	 sudo docker network rm $$(sudo docker network ls -q)
-
-fclean:
-	@sudo rm -rf client/uploads/*
-	@sudo rm -rf server/*
-	@make clean
+	@docker stop $$(docker ps -qa);\
+	 docker rm $$(docker ps -qa); \
+	 docker volume rm $$(docker volume ls -q);\
+	 docker network rm $$(docker network ls -q)
 
 info:
-	@echo "=== ftp-client ==="
-	@echo "IP : $(shell sudo docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ftp-client)"
-	@echo "MAC : $(shell sudo docker inspect --format '{{range .NetworkSettings.Networks}}{{.MacAddress}}{{end}}' ftp-client)"
-	@echo ""
-	@echo "=== ftp-server ==="
-	@echo "IP : $(shell sudo docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ftp-server)"
-	@echo "MAC : $(shell sudo docker inspect --format '{{range .NetworkSettings.Networks}}{{.MacAddress}}{{end}}' ftp-server)"
-	@echo ""
-	@echo "=== inquisitor ==="
-	@echo "IP : $(shell sudo docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' inquisitor)"
-	@echo "MAC : $(shell sudo docker inspect --format '{{range .NetworkSettings.Networks}}{{.MacAddress}}{{end}}' inquisitor)"
+	@echo "serverIP attackerMAC clientIP clientMAC"
+	@echo "$(shell docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' server) \
+	$(shell docker inspect --format '{{range .NetworkSettings.Networks}}{{.MacAddress}}{{end}}' attacker) \
+	$(shell docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' client) \
+	$(shell docker inspect --format '{{range .NetworkSettings.Networks}}{{.MacAddress}}{{end}}' client)"
 
 list:
 	@echo "======== CONTAINERS"
-	@sudo docker ps -a
+	@docker ps -a
 	@echo "======== IMAGES"
-	@sudo docker images -a
+	@docker images -a
 	@echo "======== VOLUMES"
-	@sudo docker volume ls
+	@docker volume ls
 	@echo "======== NETWORKS"
-	@sudo docker network ls
+	@docker network ls
 
-.PHONY: all down clean list
+.PHONY: all down clean list client attacker

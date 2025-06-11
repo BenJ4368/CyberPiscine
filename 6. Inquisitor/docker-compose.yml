@@ -1,44 +1,26 @@
+
 services:
-  ftp-server:
-    image: stilliard/pure-ftpd
-    container_name: ftp-server
+  client:
+    build: ./client
+    container_name: client
     networks:
-      - inquisitor-network
-    env_file:
-      - .env
+      - inqu_network
+    tty: true
+  server:
+    build: ./server
+    container_name: server
     ports:
-      - "21:21"
-      - "30000-30009:30000-30009"
-    volumes:
-      - ./server:/home/user
-
-  ftp-client:
-    image: alpine
-    container_name: ftp-client
+      - "8021:21"
     networks:
-      - inquisitor-network
-    env_file:
-      - .env
-    depends_on:
-      - ftp-server
-    volumes:
-      - ./client:/client
-    command: ["/bin/sh", "-c", "/client/ftp-upload.sh"]
-
-  inquisitor:
-    build: .
-    container_name: inquisitor
+      - inqu_network
+    tty: true
+  attacker:
+    build: ./attacker
+    container_name: attacker
     networks:
-      - inquisitor-network
-    privileged: true
-    env_file:
-      - .env
-    depends_on:
-      - ftp-client
-      - ftp-server
-    volumes:
-      - ./inquisitor:/intercepted
+      - inqu_network
+    tty: true
 
 networks:
-  inquisitor-network:
+  inqu_network:
     driver: bridge

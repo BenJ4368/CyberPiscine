@@ -18,17 +18,17 @@
 
 - **ft_onion** : Hébergement d'une page HTML accessible via le réseau Tor, avec connexion SSH au serveur.
 
-### 4. 🧠 ReverseMe
+### 4. 🧩 ReverseMe
 
 - Désassemblage de binaires pour en récupérer le mot de passe.
 
-### 5. 🧬 Stockholm (Malware)
+### 5. 🧊 Stockholm
 
 - Analyse, compréhension puis reproduction de malware.
 
 ### 6. 🕵️ Inquisitor
 
-- En cours
+- Empoisonnement de table ARP pour de l'usurpation d'identite et de l'interception de paquets.
 
 ### 7. 💉 Vaccine
 
