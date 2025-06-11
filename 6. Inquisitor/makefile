@@ -14,6 +14,8 @@ clean:
 	 docker volume rm $$(docker volume ls -q);\
 	 docker network rm $$(docker network ls -q)
 
+iclean:
+	@docker rmi $$(docker images -q);
 info:
 	@echo "serverIP attackerMAC clientIP clientMAC"
 	@echo "$(shell docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' server) \
